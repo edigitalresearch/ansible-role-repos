@@ -1,0 +1,7 @@
+## managed by ansible; manual changes will be overwritten.
+{% for reponame, repodata in item.value.items() %}
+[{{reponame}}]
+{% for key, value in repodata.items() %}
+{{ key }}={{value}}
+{% endfor %}
+{% endfor %}
