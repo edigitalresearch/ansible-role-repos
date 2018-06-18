@@ -1,0 +1,20 @@
+---
+- name: REPOS | Add repo files
+  template:
+    src: templates/yum.repo.j2
+    dest: /etc/yum.repos.d/{{ item.key }}.repo
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  with_dict: "{{ repositories }}"
+
+- name: REPOS | Delete unmanaged repos
+  shell: ls -1 /etc/yum.repos.d/
+  register: repos_to_manage
+
+- name: REPOS | Delete unmanaged repos
+  file:
+    name: /etc/yum.repos.d/{{ item }}
+    state: absent
+  with_items: "{{ repos_to_manage.stdout_lines }}"
+  when: repositories_manage_all and item.split(".")[0] not in repositories.keys()
